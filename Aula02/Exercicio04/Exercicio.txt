@@ -1,0 +1,11 @@
+Objetivo: Ordenar um vetor de structs de acordo com a ordem alfabética dos nomes, utilizando a idade em ordem crescente como critério de desempate.
+
+typedef struct Alunos {
+  string nome;
+  string curso;
+  int idade;
+} al;
+
+- Mostrar o Array antes e depois da execução do bubble sort;
+- Apresentar o tempo gasto na execução do bubble sort.
+- Faze-lo parar de ordenar quando não houver mais elementos fora de posição.

@@ -1,0 +1,14 @@
+O método bubble sort consiste em ordenar um Array trocando os elementos adjacentes fora de posição.
+
+[ 5, 7, 6, 1 ]
+  _  _        -> Compara os dois, 5 é menor que 7, então não há troca.
+
+[ 5, 7, 6, 1 ]
+     _  _     -> 6 é menor que 7, então há troca.
+
+[ 5, 6, 7, 1 ]
+        _  _  -> 1 é menor que 7, então há troca.
+
+...
+
+O looping acontece até que não existam mais elementos fora de posição.

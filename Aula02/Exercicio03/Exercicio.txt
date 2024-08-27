@@ -1,0 +1,3 @@
+Objetivo: Melhorar o algorítmo Bubble Sort
+
+- Faze-lo parar de ordenar quando não houver mais elementos fora de posição.
