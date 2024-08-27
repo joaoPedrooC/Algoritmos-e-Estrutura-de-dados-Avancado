@@ -1,0 +1,12 @@
+O método insertion sort consiste em ordenar um array ordenando um elemento por vez.
+
+[ 2, 3, 1 ]
+  -  -    -> Compara os dois, não há troca.
+
+[ 2, 3, 1 ]
+     -  - -> 1 é menor que 3, troca as posições.
+
+[ 2, 1, 3 ]
+  -  -    -> 1 é menor que 2, troca as posições.
+
+[ 1, 2, 3 ] Aqui, não há mais elementos para comparar, portanto, seguiria para o próximo índice (caso houvesse)

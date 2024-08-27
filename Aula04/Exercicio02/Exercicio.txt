@@ -1,0 +1,4 @@
+Objetivo: Gerar 1000 números aleatórios e ordená-los com Selection Sort.
+
+- Mostrar o Array antes e depois da execução do selection sort;
+- Apresentar o tempo gasto na execução do selection sort.

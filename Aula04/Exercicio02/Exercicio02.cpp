@@ -1,17 +1,21 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define TAMANHO 100
+#define TAMANHO 1000
 
-void insertion_sort(int vetor[], int n) {
-  for(int i = 1; i < n; i++) {
-    for(int k = i - 1; k >= 0 && vetor[k] > vetor[k+1]; k--) {
+void selection_sort(int vetor[], int n) {
+  for(int i = 0; i < n - 1; i++) {
+    int posicao = i;
 
-      int aux = vetor[k];
-      vetor[k] = vetor[k+1];
-      vetor[k+1] = aux;
-
+    for(int j = i + 1; j < n; j++) {
+      if(vetor[posicao] > vetor[j]) {
+        posicao = j;
+      }
     }
+
+    int aux = vetor[i];
+    vetor[i] = vetor[posicao];
+    vetor[posicao] = aux;
   }
 }
 
@@ -35,7 +39,7 @@ int main() {
 
   clock_t inicio = clock();
 
-  insertion_sort(vetor, TAMANHO);
+  selection_sort(vetor, TAMANHO);
 
   clock_t fim = clock();
 
@@ -43,6 +47,7 @@ int main() {
   imprime_lista(vetor, TAMANHO);
 
   float tempoGasto = (double)( fim - inicio ) / CLOCKS_PER_SEC;
+  cout << setprecision(5) << fixed;
   cout << "\nTempo gasto: " << tempoGasto << " segundos." << endl;
 
   return 0;

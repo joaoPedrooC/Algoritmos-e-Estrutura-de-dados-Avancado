@@ -1,0 +1,4 @@
+Objetivo: Ordenar uma lista com N números (informados pelo teclado) e ordená-los utilizando Merge Sort.
+
+- Mostrar o Array antes e depois da execução do Merge sort;
+- Apresentar o tempo gasto na execução do Merge sort.

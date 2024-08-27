@@ -1,0 +1,4 @@
+Objetivo:  Ordenar um array de números advindos do teclado utilizando Insertion Sort.
+
+- Mostrar o Array antes e depois da execução do insertion sort;
+- Apresentar o tempo gasto na execução do insertion sort.

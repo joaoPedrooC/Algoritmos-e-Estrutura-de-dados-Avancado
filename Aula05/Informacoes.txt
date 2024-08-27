@@ -1,0 +1,3 @@
+Data da Aula -> 12 de Setembro
+
+Conteúdo -> Merge Sort
