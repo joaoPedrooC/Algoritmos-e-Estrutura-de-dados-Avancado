@@ -59,9 +59,11 @@ public class Arvore {
   }
 
   public void ImprimirDecrescente(No raiz) {
-    this.ImprimirDecrescente(raiz.no_dir);
-    System.out.println(raiz.valor + " ");
-    this.ImprimirDecrescente(raiz.no_esq);
+    if (raiz != null) {
+      this.ImprimirDecrescente(raiz.no_dir);
+      System.out.println(raiz.valor + " ");
+      this.ImprimirDecrescente(raiz.no_esq);
+    }
   }
 
   public int ContarElementos(No raiz) {

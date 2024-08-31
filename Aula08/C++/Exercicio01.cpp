@@ -190,8 +190,7 @@ No* RemoverNo(No* raiz, int valor) {
 int main() {
   No* raiz = NULL;
   
-  while (true)
-  {
+  while (true) {
     int opcao;
 
     cout << "\n1.Inserir\n2.Busca\n3.Imprimir O. Crescente\n4.Imprimir O. Decrescente\n5.Contar Elementos\n6.Somar Elementos\n7.Encontrar Menor\n8.Encontrar Maior\n9.Imprimir Folhas\n10.Imprimir Nao Folhas\n11.Remover:\n";
