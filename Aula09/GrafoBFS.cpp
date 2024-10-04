@@ -59,8 +59,6 @@ No* InserirNo(No* raiz, int valor, int ponto_insercao, bool bidirecional) {
 bool BuscarNo(No* raiz, int valor) {
   if(raiz == NULL) return false;
 
-  if(raiz->valor_no == valor) return true;
-
   No* percorre_grafo = raiz;
   while(percorre_grafo != NULL) {
     if(percorre_grafo->valor_no == valor) return true;
