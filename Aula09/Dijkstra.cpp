@@ -1,164 +1,216 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct dijkstra {
-  int d;
+int numeroVertices = 0;
 
-  dijkstra* prox;
-  dijkstra* adj;
-};
+struct adjacencia;
 
-struct adjacencias;
-
-struct No {
-  int v;
+struct vertice {
+  int valor;
   bool visitado;
 
-  No* prox;
-  adjacencias* adj;
+  adjacencia* adj;
 };
 
-struct adjacencias {
-  int p;
-  
-  No* no_adj;
-  adjacencias* lista_adj;
+struct adjacencia {
+  int distancia;
+  int verticeAdj;
+
+  adjacencia* listaAdj;
 };
 
-dijkstra* InsereFila(dijkstra* d, int dist) {
-  dijkstra* dj = (dijkstra*)malloc(sizeof(dijkstra));
-  dj->d = dist;
-  dj->adj = NULL;
-  dj->prox = NULL;
-
-  return dj;
+void LimpaVisitados(vertice** g) {
+  for(int i = 0; i < numeroVertices; i++) {
+    g[i]->visitado = false;
+  }
 }
 
-dijkstra* CalcularDistancia(No* g, dijkstra* dj) {
-  adjacencias* p = g->adj;
-  dijkstra* d;
+vertice** InserirVertice(vertice** v, int val1, int val2, int distancia) {
+  if(v == NULL) {
+    vertice* novoVertice = (vertice*)malloc(sizeof(vertice));
+    novoVertice->valor = val1;
+    novoVertice->visitado = false;
 
-  if(dj != NULL) d = dj->adj;
-  else d = NULL;
+    adjacencia* adj = (adjacencia*)malloc(sizeof(adjacencia));
+    adj->distancia = distancia;
+    adj->verticeAdj = val2;
+    adj->listaAdj = NULL;
 
-  while(p != NULL) {
-    int dist = p->p;
-    d = InsereFila(d, dist);
+    novoVertice->adj = adj;
 
-    d->adj = CalcularDistancia(p->no_adj, d->adj);
+    vertice** vetorVertice = (vertice**)malloc(sizeof(vertice*));
+    vetorVertice[0] = novoVertice;
+    
+    numeroVertices++;
 
-    p = p->lista_adj;
-    d = d->prox;
+    return vetorVertice;
   }
 
-  return dj;
+  vertice* verticeInsercao = NULL;
+  vertice** percorre_g = v;
+
+  for(int i = 0; i < numeroVertices; i++) {
+    if(percorre_g[i]->valor == val1) verticeInsercao = percorre_g[i];
+  }
+
+  if(verticeInsercao == NULL) {
+    vertice* novoVertice = (vertice*)malloc(sizeof(vertice));
+    novoVertice->valor = val1;
+    novoVertice->visitado = false;
+
+    adjacencia* adj = (adjacencia*)malloc(sizeof(adjacencia));
+    adj->distancia = distancia;
+    adj->verticeAdj = val2;
+    adj->listaAdj = NULL;
+
+    novoVertice->adj = adj;
+    percorre_g = v;
+
+    v[numeroVertices] = novoVertice;
+    numeroVertices++;
+    return v;
+  }
+
+  adjacencia* lista_adj = verticeInsercao->adj;
+  adjacencia* nova_adj = (adjacencia*)malloc(sizeof(adjacencia));
+
+  nova_adj->verticeAdj = val2;
+  nova_adj->distancia = distancia;
+  nova_adj->listaAdj = lista_adj;
+
+  verticeInsercao->adj = nova_adj;
+  return v;
 }
 
-No* VerificarExistencia(No* g, int v) {
-  No* p = g;
-  while(p != NULL) {
-    if(p->v == v) return p;
+void ImprimirGrafo(vertice** g) {
+  vertice** percorre_g = g;
+  int i = 0;
 
-    p = p->prox;
-  }
+  while(i < numeroVertices) {
+    cout << percorre_g[i]->valor << " -> ";
 
-  return NULL;
-}
-
-No* InserirNo(No* g, int u, int v, int l) {
-  No* noU = VerificarExistencia(g, u);
-  No* noV = VerificarExistencia(g, v);
-
-  if(noU != NULL && noV != NULL) {
-    adjacencias* adj = (adjacencias*)malloc(sizeof(adjacencias));
-    adj->no_adj = noV;
-    adj->p = l;
-    adj->lista_adj = noU->adj;
-
-    noU->adj = adj;
-    return g;
-  } else if(noU != NULL && noV == NULL) {
-    noV = (No*)malloc(sizeof(No));
-    noV->v = v;
-    noV->adj = NULL;
-    noV->visitado = false;
-
-    adjacencias* adj = (adjacencias*)malloc(sizeof(adjacencias));
-    adj->no_adj = noV;
-    adj->p = l;
-    adj->lista_adj = noU->adj;
-
-    noU->adj = adj;
-    return g;
-  }
-
-  noU = (No*)malloc(sizeof(No));
-  noU->v = u;
-  noU->prox = g;
-  noU->visitado = false;
-
-  adjacencias* adj = (adjacencias*)malloc(sizeof(adjacencias));
-  adj->p = l;
-  adj->lista_adj = NULL;
-
-
-  if(noV != NULL) {
-    adj->no_adj = noV;
-    noU->adj = adj;
-
-    return noU;
-  }
-
-  noV = (No*)malloc(sizeof(No));
-  noV->v = v;
-  noV->prox = noU;
-  noV->visitado = false;
-
-  noV->adj = NULL;
-
-  adj->no_adj = noV;
-  noU->adj = adj;
-
-  return noV;
-}
-
-void ImprimirGrafo(No* g) {
-  No* p = g;
-
-  while(p != NULL) {
-    cout << "No(" << p->v << "): ";
-
-    adjacencias* adj = p->adj;
-    while(adj != NULL) {
-      cout << adj->no_adj->v << " ";
-
-      adj = adj->lista_adj;
+    adjacencia* lista_adj = percorre_g[i]->adj;
+    while(lista_adj != NULL) {
+      cout << "V" << lista_adj->verticeAdj << " | D(" << lista_adj->distancia << ") -> ";
+      lista_adj = lista_adj->listaAdj;
     }
 
-    cout << endl;
-    p = p->prox;
+    cout << "NULL" << endl;
+    i++;
   }
+}
+
+bool ExisteAberto(vertice** g) {
+  for(int i = 0; i < numeroVertices; i++) {
+    if(!g[i]->visitado) return true;
+  }
+
+  return false;
+}
+
+void dijkstra(vertice** g, int vInicial, int vFinal, int* d, int* menorCaminho) {
+  vertice** percorre_g = g;
+
+  while(ExisteAberto(g)) {
+    int menorDist = INT_MAX;
+    int indiceMenorDist;
+
+    for(int i = 0; i < numeroVertices; i++) {
+      if(d[i] < menorDist && !g[i]->visitado) {
+        menorDist = d[i];
+        indiceMenorDist = i;
+      }
+    }
+
+    adjacencia* adj = percorre_g[indiceMenorDist]->adj;
+    while(adj != NULL) {
+      int indiceAdj;
+
+      for(int j = 0; j < numeroVertices; j++) {
+        if(percorre_g[j]->valor == adj->verticeAdj) {
+          indiceAdj = j;
+          break;
+        }
+      }
+
+      if(d[indiceAdj] > d[indiceMenorDist] + adj->distancia) {
+        d[indiceAdj] = d[indiceMenorDist] + adj->distancia;
+        menorCaminho[indiceAdj] = indiceMenorDist;
+      }
+
+      adj = adj->listaAdj;
+    }
+
+    g[indiceMenorDist]->visitado = true;
+  }
+}
+
+void CalcularCaminho(vertice** g, int* d, int* menorCaminho, int vFinal) {
+  int indiceCaminho;
+  int indiceInicial;
+  for(int i = 0; i < numeroVertices; i++) {
+    if(g[i]->valor == vFinal) {
+      indiceCaminho = i;
+      break;
+    }
+
+    if(d[i] == 0) indiceInicial = i;
+  }
+
+  cout << "Menor distancia: " << d[indiceCaminho] << endl << "Caminho: " << vFinal << " ";
+
+  while(g[indiceCaminho] != g[indiceInicial]) {
+    cout << g[menorCaminho[indiceCaminho]]->valor << " ";
+    indiceCaminho = menorCaminho[indiceCaminho];
+  }
+
+  cout << endl;
 }
 
 int main() {
-  No* g = NULL;
-  
+  vertice** vetorVertices = NULL;
+
   int op;
   while(cin >> op) {
     if(op == 1) {
-      int u, v, l;
-      cin >> u >> v >> l;
+      int u, l, dist;
+      cin >> u >> l >> dist;
 
-      g = InserirNo(g, u, v, l);
-      g = InserirNo(g, v, u, l);
+      vetorVertices = InserirVertice(vetorVertices, u, l, dist);
+      vetorVertices = InserirVertice(vetorVertices, l, u, dist);
     } else if(op == 2) {
-      ImprimirGrafo(g);
-      cout << endl;
+      ImprimirGrafo(vetorVertices);
     } else if(op == 3) {
-      dijkstra* dj = (dijkstra*)malloc(sizeof(dijkstra));
-      dj->d = 0;
-      dj->adj = NULL;
-      dj->prox = NULL;
+      int vInicial, vFinal;
+      cin >> vInicial >> vFinal;
+      int* d = (int*)malloc(sizeof(int) * numeroVertices);
+      int* menorCaminho = (int*)malloc(sizeof(int) * numeroVertices);
+
+      bool verticeInicial = false, verticeFinal = false;
+      for(int i = 0; i < numeroVertices; i++) {
+        if(vetorVertices[i]->valor == vInicial) {
+          verticeInicial = true;
+          d[i] = 0;
+          menorCaminho[i] = 0;
+        } else {
+          d[i] = INT_MAX/2;
+          menorCaminho[i] = -1;
+        }
+
+        if(vetorVertices[i]->valor == vFinal) verticeFinal = true;
+       
+      }
+
+      if(!verticeInicial || !verticeFinal) cout << "Vertice(s) inexistente(s)." << endl;
+      else {
+        dijkstra(vetorVertices, vInicial, vFinal, d, menorCaminho);
+
+        CalcularCaminho(vetorVertices, d, menorCaminho, vFinal);
+        
+        free(d);
+        free(menorCaminho);
+        LimpaVisitados(vetorVertices);
+      }
     }
   }
 }
