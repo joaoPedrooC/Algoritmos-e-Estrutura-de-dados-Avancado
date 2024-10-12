@@ -1,109 +1,133 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct No {
-  int valorNo;
-  bool bidirecional;
+int quantidadeVertices = 0;
 
-  No* proximo_no;
-  No* no_anterior;
+struct adjacencia {
+  int valorAdj;
+  int pesoAdj;
 
-  No* no_filho;
+  adjacencia* proxima_adj;
 };
 
-No* InserirNo(No* raiz, int valor, int ponto_insercao, bool bidirecional) {
-  if(raiz == NULL) {
-    No* novo_no = (No*)malloc(sizeof(No));
-    novo_no->valorNo = valor;
-    novo_no->bidirecional = false;
-    novo_no->no_anterior = NULL;
+struct vertice {
+  int valor;
+  adjacencia* listaAdjacencia;
+};
 
-    novo_no->proximo_no = NULL;
-    novo_no->no_filho = NULL;
+vertice** InserirVertice(vertice** g, int valorVertice, int valorAdjacencia, int pesoAdjacencia) {
+  adjacencia* novaAdjacencia = (adjacencia*)malloc(sizeof(adjacencia));
+  novaAdjacencia->valorAdj = valorAdjacencia;
+  novaAdjacencia->pesoAdj = pesoAdjacencia;
+  novaAdjacencia->proxima_adj = NULL;
 
-    return novo_no;
+  if(g == NULL) {
+    vertice** novoG = (vertice**)malloc(sizeof(vertice*));
+    vertice* novoVertice = (vertice*)malloc(sizeof(vertice));
+
+    novoVertice->valor = valorVertice;
+    novoVertice->listaAdjacencia = novaAdjacencia;
+
+    novoG[0] = novoVertice;
+    quantidadeVertices++;
+
+    return novoG;
+  }
+  
+  vertice* insercao = NULL;
+  for(int i = 0; i < quantidadeVertices && g[i] != NULL; i++) {
+    if(g[i]->valor == valorVertice) {
+      insercao = g[i];
+      break;
+    }
   }
 
-  No* percorre_grafo = raiz;
-  while(percorre_grafo != NULL) {
-    if(percorre_grafo->valorNo == ponto_insercao) {
-      No* novo_no = (No*)malloc(sizeof(No));
-      novo_no->valorNo = valor;
-      novo_no->bidirecional = bidirecional;
-      novo_no->no_anterior = percorre_grafo;
+  if(insercao) {
+    novaAdjacencia->proxima_adj = insercao->listaAdjacencia;
+    insercao->listaAdjacencia = novaAdjacencia;
 
-      novo_no->proximo_no = percorre_grafo->no_filho;
-      novo_no->no_filho = NULL;
-
-      percorre_grafo->no_filho = novo_no;
-
-      return raiz;
-    }
-
-    if(percorre_grafo->no_filho) {
-      percorre_grafo->no_filho = InserirNo(percorre_grafo->no_filho, valor, ponto_insercao, bidirecional);
-    }
-
-    percorre_grafo = percorre_grafo->proximo_no;
+    return g;
   }
 
-  return raiz;
+  vertice* novoVertice = (vertice*)malloc(sizeof(vertice));
+
+  novoVertice->valor = valorVertice;
+  novoVertice->listaAdjacencia = novaAdjacencia;
+  quantidadeVertices++;
+  return g;
 }
 
-bool BuscarNo(No* raiz, int valor) {
-  if(raiz == NULL) return false;
+bool DFS(vertice** g, vertice* verticeInicial, int valorBusca, bool* visitados) {
+  if(!verticeInicial) return false;
+  if(verticeInicial->valor == valorBusca) return true;
 
-  No* percorre_grafo = raiz;
-  while(percorre_grafo != NULL) {
-    if(percorre_grafo->valorNo == valor) return true;
+  int indiceVertice;
+  for(int i = 0; i < quantidadeVertices; i++) {
+    if(g[i]->valor == verticeInicial->valor) {
+      indiceVertice = i;
+      break;
+    }
+  }
 
-    if(BuscarNo(percorre_grafo->no_filho, valor)) return true;
+  adjacencia* percorre_adj = verticeInicial->listaAdjacencia;
+  while(percorre_adj != NULL) {
+    if(percorre_adj->valorAdj == valorBusca) return true;
+    
+    for(int i = 0; i < quantidadeVertices; i++) {
+      if(g[i]->valor == percorre_adj->valorAdj && !visitados[i]) {
+        if(DFS(g, g[i], valorBusca, visitados)) return true;
+      }
+    }
 
-    percorre_grafo = percorre_grafo->proximo_no;
+    visitados[indiceVertice] = true;
+    percorre_adj = percorre_adj->proxima_adj;
   }
 
   return false;
 }
 
-void ImprimirGrafo(No* raiz) {
-  if(raiz == NULL) return;
+bool BuscaProfundidade(vertice** g, int valorBusca) {
+  bool* visitados = (bool*)calloc(sizeof(bool) * quantidadeVertices, false);
 
-  No* percorre_grafo = raiz;
-  while(percorre_grafo != NULL) {
-    cout << percorre_grafo->valorNo << " ";
+  while(1) {
+    bool continua = false;
     
-    if(percorre_grafo->no_filho) {
-      ImprimirGrafo(percorre_grafo->no_filho);
+    for(int i = 0; i < quantidadeVertices; i++) {
+      if(!visitados[i]) {
+        visitados[i] = true;
+        if(DFS(g, g[i], valorBusca, visitados)) return true;
+
+        continua = true;
+        break;
+      }
     }
 
-    percorre_grafo = percorre_grafo->proximo_no;
+    if(!continua) break;
   }
+
+  return false;
 }
 
 int main() {
-  No* raiz = NULL;
+  vertice** grafo = NULL;
 
   while (true) {
     int op;
     cin >> op;
 
     if(op == 1) {
-      int valor, ponto_insercao;
-      bool bidirecional;
+      int valorVertice, valorAdjacencia, pesoAdjacencia;
+      cin >> valorVertice >> valorAdjacencia >> pesoAdjacencia;
 
-      cin >> valor >> ponto_insercao >> bidirecional;
-
-      raiz = InserirNo(raiz, valor, ponto_insercao, bidirecional);
+      grafo = InserirVertice(grafo, valorVertice, valorAdjacencia, pesoAdjacencia);
       cout << endl;
     } else if(op == 2) {
       int valor;
       cin >> valor;
 
-      cout << BuscarNo(raiz, valor) << endl;
-      cout << endl;
+      cout << BuscaProfundidade(grafo, valor) << endl;
     } else if(op == 3) {
-      ImprimirGrafo(raiz);
-      cout << endl;
+      return 0;
     }
   }
 
