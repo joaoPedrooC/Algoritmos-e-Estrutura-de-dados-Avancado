@@ -3,7 +3,7 @@ using namespace std;
 
 int TAMANHO_VETOR = -1;
 
-void quick_sort(int vetor[], int start, int end, void imprime_lista(int*, int)) {
+void quick_sort(int vetor[], int start, int end, void imprime_lista(int*, int), bool allowPrints) {
     if (start >= end) return;
     
     int start_cpy = start;
@@ -24,9 +24,11 @@ void quick_sort(int vetor[], int start, int end, void imprime_lista(int*, int)) 
 
     if (TAMANHO_VETOR == -1) TAMANHO_VETOR = end;
 
-    cout << "[+1 STEP] | PIVOT: " << pivot << " | Ordenacao vetor QUICK SORT:" << endl;
-    imprime_lista(vetor, TAMANHO_VETOR);
+    if(allowPrints) {
+        cout << "[+1 STEP] | PIVOT: " << pivot << " | Ordenacao vetor QUICK SORT:" << endl;
+        imprime_lista(vetor, TAMANHO_VETOR);
+    }
 
-    quick_sort(vetor, start, start_cpy, imprime_lista);
-    quick_sort(vetor, start_cpy + 1, end, imprime_lista);
+    quick_sort(vetor, start, start_cpy, imprime_lista, allowPrints);
+    quick_sort(vetor, start_cpy + 1, end, imprime_lista, allowPrints);
 }
